@@ -87,14 +87,9 @@ A aplicação foi projetada utilizando arquitetura moderna baseada em:
 - Spring Boot
 - Spring Security
 - Spring Data JPA
-- Hibernate
-- Maven
 
 ## Frontend
 - React
-- Axios
-- React Router DOM
-- Context API
 
 ## Banco de Dados
 - MySQL 8
@@ -102,8 +97,6 @@ A aplicação foi projetada utilizando arquitetura moderna baseada em:
 ## Ferramentas
 - Git
 - GitHub
-- Postman
-- Docker (opcional)
 
 ---
 
