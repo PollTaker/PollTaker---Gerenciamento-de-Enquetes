@@ -198,7 +198,7 @@ Option 1:N Vote
 ### Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/PollTaker.git
+git clone https://github.com/lucas-chalita/PollTaker.git
 ```
 
 ### Acesse a pasta backend
