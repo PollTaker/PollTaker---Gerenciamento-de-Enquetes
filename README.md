@@ -107,6 +107,14 @@ PollTaker/
 │
 ├── backend/
 │   ├── src/main/java
+│   │   ├── config/
+│   │   ├── controller/
+│   │   ├── dto/
+│   │   ├── services/
+│   │   ├── infrastructure/
+│   │       ├── entities/
+│   │       ├── enums/
+│   │       ├── repositories/
 │   ├── src/main/resources
 │   └── pom.xml
 │
