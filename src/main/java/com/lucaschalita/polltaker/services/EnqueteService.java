@@ -2,6 +2,7 @@ package com.lucaschalita.polltaker.services;
 
 import com.lucaschalita.polltaker.infrastructure.repositories.EnqueteRepository;
 import java.util.List;
+import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,24 @@ public class EnqueteService {
 		enquete.setCreatedAt(LocalDateTime.now());;
 		repository.saveAndFlush(enquete);
 	}
-	
-	public List<Enquete> findByDataCriacao(LocalDate createdAt) {
-		List<Enquete> enquetes = repository.findByCreatedAt(createdAt);
+
+	public Enquete buscarPorId(Long id) {
+
+		return repository.findById(id)
+				.orElseThrow(
+						() -> new RuntimeException("Enquete não encontrada.")
+				);
+	}
+
+	public List<Enquete> findByDataCriacao(LocalDate data) {
+		LocalDateTime inicio = data.atStartOfDay();
+		LocalDateTime fim = data.atTime(LocalTime.MAX);
+		List<Enquete> enquetes = repository.findByCreatedAtBetween(inicio, fim);
 		if (enquetes.isEmpty()) {
-			throw new RuntimeException("Não há enquetes criadas por este usuário.");
+			throw new RuntimeException("Não há enquetes criadas neste período.");
 		}
-		return repository.findByCreatedAt(createdAt);
+
+		return repository.findByCreatedAtBetween(inicio, fim);
 	}
 	
 	public List<Enquete> findByCriador (Long criadorId) {
@@ -49,7 +61,7 @@ public class EnqueteService {
 				.titulo(enquete.getTitulo() != null ? enquete.getTitulo() : enqueteEntity.getTitulo())
 				.criador(enquete.getCriador() != null ? enquete.getCriador() : enqueteEntity.getCriador())
 				.dataEncerramento(enquete.getDataEncerramento() != null ? enquete.getDataEncerramento() : enqueteEntity.getDataEncerramento())
-				.createdAt(enquete.getCreatedAt() != null ? enquete.getCreatedAt() : enqueteEntity.getCreatedAt())
+				.createdAt(enqueteEntity.getCreatedAt())
 				.status(enquete.getStatus() != null ? enquete.getStatus() : enqueteEntity.getStatus())
 				.build();
 		repository.saveAndFlush(enqueteAtualizada);

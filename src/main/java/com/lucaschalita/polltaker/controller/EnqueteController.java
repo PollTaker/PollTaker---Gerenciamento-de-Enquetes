@@ -1,54 +1,78 @@
 package com.lucaschalita.polltaker.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import com.lucaschalita.polltaker.infrastructure.entities.Enquete;
 import com.lucaschalita.polltaker.services.EnqueteService;
-import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/enquete")
+@RequestMapping("/api/v1/enquetes")
 @RequiredArgsConstructor
 public class EnqueteController {
-	
+
 	private final EnqueteService enqueteService;
-	
+
 	@PostMapping
-	public ResponseEntity<Void> salvarEnquete (@RequestBody Enquete enquete) {
+	public ResponseEntity<Void> salvarEnquete(
+			@RequestBody Enquete enquete) {
+
 		enqueteService.salvarEnquete(enquete);
-		return ResponseEntity.ok().build();
+
+		return ResponseEntity.status(201).build();
 	}
-	
+
 	@GetMapping("/data")
-	public ResponseEntity<List<Enquete>> buscarEnquetePorDataCriacao (@RequestParam LocalDate dataCriacao) {
-		return ResponseEntity.ok(enqueteService.findByDataCriacao(dataCriacao));
+	public ResponseEntity<List<Enquete>> buscarPorData(
+			@RequestParam LocalDate dataCriacao) {
+
+		return ResponseEntity.ok(
+				enqueteService.findByDataCriacao(dataCriacao)
+		);
 	}
-	
-	@GetMapping("/criador")
-	public ResponseEntity<List<Enquete>> buscarEnquetePorCriador (@RequestParam Long criadorId) {
-		return ResponseEntity.ok(enqueteService.findByCriador(criadorId));
+
+	@GetMapping("/criador/{id}")
+	public ResponseEntity<List<Enquete>> buscarPorCriador(
+			@PathVariable Long id) {
+
+		return ResponseEntity.ok(
+				enqueteService.findByCriador(id)
+		);
 	}
-	
-	@DeleteMapping
-	public ResponseEntity<Void> deleterEnquetePorId (@RequestParam Long id) {
+
+	@GetMapping("/{id}")
+	public ResponseEntity<Enquete> buscarPorId(
+			@PathVariable Long id) {
+
+		return ResponseEntity.ok(
+				enqueteService.buscarPorId(id)
+		);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deletarEnquete(
+			@PathVariable Long id) {
+
 		enqueteService.deleteById(id);
-		return ResponseEntity.ok().build();
+
+		return ResponseEntity.noContent().build();
 	}
-	
-	@PutMapping
-	public ResponseEntity<Void> atualizarEnquetePorId (@RequestParam Long id, @RequestBody Enquete enquete) {
+
+
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Void> atualizarEnquete(
+			@PathVariable Long id,
+			@RequestBody Enquete enquete) {
+
+
 		enqueteService.atualizarEnquetePorId(id, enquete);
+
 		return ResponseEntity.ok().build();
 	}
 }

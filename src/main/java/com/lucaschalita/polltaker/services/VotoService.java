@@ -3,6 +3,7 @@ package com.lucaschalita.polltaker.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import com.lucaschalita.polltaker.infrastructure.enums.StatusEnquete;
 
 import org.springframework.stereotype.Service;
 import com.lucaschalita.polltaker.infrastructure.entities.Voto;
@@ -87,7 +88,12 @@ public class VotoService {
 	    Opcao opcao = opcaoRepository.findById(idOpcao)
 	            .orElseThrow(() ->
 	                    new RuntimeException("Opção não encontrada."));
-	    
+
+		if (!opcao.getEnquete().getId().equals(idEnquete)) {
+			throw new RuntimeException(
+					"A opção não pertence a esta enquete.");
+		}
+
 	    if (votoRepository.existsByUsuarioAndEnquete(
 	            usuario,
 	            enquete)) {
@@ -95,6 +101,16 @@ public class VotoService {
 	        throw new RuntimeException(
 	                "Usuário já votou nesta enquete.");
 	    }
+
+		if (enquete.getStatus() == StatusEnquete.FECHADA) {
+			throw new RuntimeException(
+					"A enquete está encerrada.");
+		}
+
+		if (LocalDateTime.now().isAfter(enquete.getDataEncerramento())) {
+			throw new RuntimeException(
+					"A enquete está encerrada.");
+		}
 
 	    Voto voto = Voto.builder()
 	            .usuario(usuario)

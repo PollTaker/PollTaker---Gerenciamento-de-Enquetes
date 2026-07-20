@@ -21,7 +21,16 @@ public class UsuarioService {
 				() -> new RuntimeException("E-mail não encontrado.")
 		);
 	}
-		
+
+	public void deleteById(Long id) {
+
+		Usuario usuario = repository.findById(id)
+				.orElseThrow(() ->
+						new RuntimeException("Usuário não encontrado."));
+
+		repository.delete(usuario);
+	}
+
 	public void deleteByEmail (String email) {
 		repository.deleteByEmail(email);
 	}
@@ -34,6 +43,8 @@ public class UsuarioService {
 				.email(usuario.getEmail() != null ? usuario.getEmail() : usuarioEntity.getEmail())
 				.nome(usuario.getNome() != null ? usuario.getNome() : usuarioEntity.getNome())
 				.id(usuarioEntity.getId())
+				.senha(usuarioEntity.getSenha())
+				.enquetesCriadas(usuarioEntity.getEnquetesCriadas())
 				.build();
 		repository.saveAndFlush(usuarioAtualizado);
 	}
