@@ -14,6 +14,7 @@ import com.lucaschalita.polltaker.infrastructure.repositories.VotoRepository;
 import com.lucaschalita.polltaker.infrastructure.repositories.OpcaoRepository;
 import com.lucaschalita.polltaker.infrastructure.repositories.UsuarioRepository;
 import com.lucaschalita.polltaker.infrastructure.repositories.EnqueteRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VotoService {
