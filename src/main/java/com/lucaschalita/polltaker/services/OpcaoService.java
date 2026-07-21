@@ -1,6 +1,7 @@
 package com.lucaschalita.polltaker.services;
 
 import org.springframework.stereotype.Service;
+import com.lucaschalita.polltaker.exceptions.*;
 import com.lucaschalita.polltaker.infrastructure.entities.Opcao;
 import com.lucaschalita.polltaker.infrastructure.repositories.OpcaoRepository;
 
@@ -18,7 +19,7 @@ public class OpcaoService {
 	
 	public Opcao buscarPorTitulo (String titulo) {
 		return repository.findByTitulo(titulo).orElseThrow(
-				() -> new RuntimeException("Opção não encontrada.")
+				() -> new OpcaoNotFoundException("Opção não encontrada.")
 		);
 	}
 	
@@ -28,7 +29,7 @@ public class OpcaoService {
 	
 	public void atualizarOpcaoPorId (Long id, Opcao opcao) {
 		Opcao opcaoEntity = repository.findById(id).orElseThrow(
-				() -> new RuntimeException("Opção não encontrada.")
+				() -> new OpcaoNotFoundException("Opção não encontrada.")
 		);
 		Opcao opcaoAtualizada = Opcao.builder()
 				.id(opcaoEntity.getId())

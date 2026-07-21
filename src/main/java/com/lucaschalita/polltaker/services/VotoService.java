@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import com.lucaschalita.polltaker.infrastructure.enums.StatusEnquete;
-
 import org.springframework.stereotype.Service;
+import com.lucaschalita.polltaker.exceptions.*;
 import com.lucaschalita.polltaker.infrastructure.entities.Voto;
 import com.lucaschalita.polltaker.infrastructure.entities.Opcao;
 import com.lucaschalita.polltaker.infrastructure.entities.Usuario;
@@ -35,14 +35,14 @@ public class VotoService {
 	
 	public long contarVotosPorOpcao (Long idOpcao) {
 		Opcao opcao = opcaoRepository.findById(idOpcao).orElseThrow(
-				() -> new RuntimeException("Opção não encontrada.")
+				() -> new OpcaoNotFoundException("Opção não encontrada.")
 		);
 		return votoRepository.countByOpcao(opcao);
 	}
 	
 	public long contarVotosPorUsuario (Long idUsuario) {
 		Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
-				() -> new RuntimeException("Usuário não encontrado.")
+				() -> new UsuarioNotFoundException("Usuário não encontrado.")
 		);
 		return votoRepository.countByUsuario(usuario);
 	}
@@ -50,23 +50,21 @@ public class VotoService {
 	public void validarVotoUsuario(Usuario usuario, Enquete enquete) {
 		boolean jaVotou = votoRepository.existsByUsuarioAndEnquete(usuario, enquete);
 		if (jaVotou) {
-			throw new RuntimeException("Este usuário já teve seu voto validado.");
+			throw new UsuarioJaVotouException("Este usuário já teve seu voto validado.");
 		}
 	}
 	
 	public List<Voto> buscarVotosPorUsuario(Long idUsuario) {
 		Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
-				() -> new RuntimeException("Usuário não encontrado.")
+				() -> new UsuarioNotFoundException("Usuário não encontrado.")
 		);
-		
 		return votoRepository.findByUsuario(usuario);
 	}
 	
 	public List<Voto> buscarVotosPorOpcao(Long idOpcao) {
 		Opcao opcao = opcaoRepository.findById(idOpcao).orElseThrow(
-				() -> new RuntimeException("Opção não encontrada.")
+				() -> new OpcaoNotFoundException("Opção não encontrada.")
 		);
-		
 		return votoRepository.findByOpcao(opcao);
 	}
 	
@@ -75,41 +73,32 @@ public class VotoService {
 		Opcao opcao = opcaoRepository.findById(idOpcao).orElseThrow();
 		return votoRepository.findByUsuarioAndOpcao(usuario, opcao);
 	}
-	
+
+	@Transactional
 	public void votar(Long idUsuario, Long idEnquete, Long idOpcao) {
 		Usuario usuario = usuarioRepository.findById(idUsuario)
-	            .orElseThrow(() ->
-	                    new RuntimeException("Usuário não encontrado."));
+	            .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado."));
 
 	    Enquete enquete = enqueteRepository.findById(idEnquete)
-	            .orElseThrow(() ->
-	                    new RuntimeException("Enquete não encontrada."));
+	            .orElseThrow(() -> new EnqueteNotFoundException("Enquete não encontrada."));
 
 	    Opcao opcao = opcaoRepository.findById(idOpcao)
-	            .orElseThrow(() ->
-	                    new RuntimeException("Opção não encontrada."));
+	            .orElseThrow(() -> new OpcaoNotFoundException("Opção não encontrada."));
 
 		if (!opcao.getEnquete().getId().equals(idEnquete)) {
-			throw new RuntimeException(
-					"A opção não pertence a esta enquete.");
+			throw new OpcaoNotFoundException("A opção não pertence a esta enquete.");
 		}
 
-	    if (votoRepository.existsByUsuarioAndEnquete(
-	            usuario,
-	            enquete)) {
-
-	        throw new RuntimeException(
-	                "Usuário já votou nesta enquete.");
+	    if (votoRepository.existsByUsuarioAndEnquete(usuario, enquete)) {
+	        throw new UsuarioJaVotouException("Usuário já votou nesta enquete.");
 	    }
 
 		if (enquete.getStatus() == StatusEnquete.FECHADA) {
-			throw new RuntimeException(
-					"A enquete está encerrada.");
+			throw new EnqueteEncerradaException("A enquete está encerrada.");
 		}
 
 		if (LocalDateTime.now().isAfter(enquete.getDataEncerramento())) {
-			throw new RuntimeException(
-					"A enquete está encerrada.");
+			throw new EnqueteEncerradaException("A enquete está encerrada.");
 		}
 
 	    Voto voto = Voto.builder()

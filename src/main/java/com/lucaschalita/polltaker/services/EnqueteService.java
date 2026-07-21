@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import com.lucaschalita.polltaker.infrastructure.entities.Enquete;
+import com.lucaschalita.polltaker.exceptions.*;
 
 @Service
 public class EnqueteService {
@@ -25,7 +26,7 @@ public class EnqueteService {
 
 		return repository.findById(id)
 				.orElseThrow(
-						() -> new RuntimeException("Enquete não encontrada.")
+						() -> new EnqueteNotFoundException("Enquete não encontrada.")
 				);
 	}
 
@@ -34,7 +35,7 @@ public class EnqueteService {
 		LocalDateTime fim = data.atTime(LocalTime.MAX);
 		List<Enquete> enquetes = repository.findByCreatedAtBetween(inicio, fim);
 		if (enquetes.isEmpty()) {
-			throw new RuntimeException("Não há enquetes criadas neste período.");
+			throw new EnqueteNotFoundException("Não há enquetes criadas neste período.");
 		}
 
 		return repository.findByCreatedAtBetween(inicio, fim);
@@ -43,7 +44,7 @@ public class EnqueteService {
 	public List<Enquete> findByCriador (Long criadorId) {
 		List<Enquete> enquetes = repository.findByCriadorId(criadorId);
 		if (enquetes.isEmpty()) {
-			throw new RuntimeException("Não há enquetes criadas por este usuário.");
+			throw new EnqueteNotFoundException("Não há enquetes criadas por este usuário.");
 		}
 		return repository.findByCriadorId(criadorId);
 	}
@@ -54,7 +55,7 @@ public class EnqueteService {
 	
 	public void atualizarEnquetePorId (Long id, Enquete enquete) {
 		Enquete enqueteEntity = repository.findById(id).orElseThrow(
-				() -> new RuntimeException("Enquete não encontrada.")
+				() -> new EnqueteNotFoundException("Enquete não encontrada.")
 		);
 		Enquete enqueteAtualizada = Enquete.builder()
 				.id(enqueteEntity.getId())
