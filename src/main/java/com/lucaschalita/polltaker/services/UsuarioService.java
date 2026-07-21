@@ -1,6 +1,7 @@
 package com.lucaschalita.polltaker.services;
 
 import org.springframework.stereotype.Service;
+import com.lucaschalita.polltaker.exceptions.*;
 import com.lucaschalita.polltaker.infrastructure.entities.Usuario;
 import com.lucaschalita.polltaker.infrastructure.repositories.UsuarioRepository;
 
@@ -23,11 +24,8 @@ public class UsuarioService {
 	}
 
 	public void deleteById(Long id) {
-
 		Usuario usuario = repository.findById(id)
-				.orElseThrow(() ->
-						new RuntimeException("Usuário não encontrado."));
-
+				.orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado."));
 		repository.delete(usuario);
 	}
 
@@ -37,7 +35,7 @@ public class UsuarioService {
 	
 	public void atualizarUsuarioPorId (Long id, Usuario usuario) {
 		Usuario usuarioEntity = repository.findById(id).orElseThrow(
-				() -> new RuntimeException("Usuário não encontrado.")
+				() -> new UsuarioNotFoundException("Usuário não encontrado.")
 		);
 		Usuario usuarioAtualizado = Usuario.builder()
 				.email(usuario.getEmail() != null ? usuario.getEmail() : usuarioEntity.getEmail())
