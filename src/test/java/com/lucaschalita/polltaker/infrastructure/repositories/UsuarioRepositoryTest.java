@@ -1,22 +1,52 @@
-package com.lucaschalita.polltaker.infrastructure.repositories;
+package com.lucaschalita.polltaker.repository;
+
 import com.lucaschalita.polltaker.infrastructure.entities.Usuario;
-import lombok.Data;
+import com.lucaschalita.polltaker.infrastructure.repositories.UsuarioRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.*;
-import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
-@Data
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@DataJpaTest
 public class UsuarioRepositoryTest {
+
     @Autowired
-    private UsuarioRepository repository;
+    private UsuarioRepository usuarioRepository;
 
     @Test
-    public void deveSalvarEBuscarUsuarioPorEmail() {
-        Usuario usuario = Usuario.builder().nome("Teste").email("teste@email.com").senha("123456").build();
-        repository.save(usuario);
-        Optional<Usuario> encontrado = repository.findByEmail("teste@email.com");
-        assertThat(encontrado).isPresent();
+    @DisplayName("Deve salvar e recuperar um usuário com sucesso no H2")
+    public void deveSalvarEBuscarUsuario() {
+
+        Usuario usuario = new Usuario();
+        usuario.setNome("Lucas Chalita");
+        usuario.setEmail("lucas.teste@polltaker.com");
+        usuario.setSenha("senhaSegura123");
+
+
+        Usuario usuarioSalvo = usuarioRepository.save(usuario);
+
+
+        assertThat(usuarioSalvo).isNotNull();
+        assertThat(usuarioSalvo.getId()).isNotNull();
+        assertThat(usuarioSalvo.getEmail()).isEqualTo("lucas.teste@polltaker.com");
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção de integridade ao tentar salvar usuário sem senha (NotNull)")
+    public void deveFalharAoSalvarSemSenha() {
+
+        Usuario usuario = new Usuario();
+        usuario.setNome("Usuário Inválido");
+        usuario.setEmail("invalido@polltaker.com");
+        usuario.setSenha(null);
+
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            usuarioRepository.saveAndFlush(usuario);
+        });
     }
 }
