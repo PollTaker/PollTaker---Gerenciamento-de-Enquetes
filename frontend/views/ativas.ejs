@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Enquetes Ativas</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Em Andamento</h1>
+        <nav><a href="/dashboard">Voltar ao Painel</a></nav>
+        <ul>
+            <% ativas.forEach(function(item) { %>
+                <li><strong><%= item.titulo %></strong> - <%= item.votos %> votos recebidos</li>
+            <% }); %>
+        </ul>
+    </div>
+</body>
+</html>

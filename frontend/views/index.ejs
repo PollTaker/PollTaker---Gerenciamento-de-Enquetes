@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PollTaker — Enquetes</title>
+    <!-- O CSS deve estar compilado em public/css/styles.css via SASS -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header-hero">
+            <span class="badge-status">API offline</span>
+            <span style="color: #64748b; font-size: 0.9rem; font-weight: 600; margin-left: 10px;">MVP • API REST</span>
+            <h1>Crie, publique e responda enquetes.</h1>
+            <p>Interface de apresentação para o projeto PollTaker. O frontend conversa diretamente com a API Spring Boot.</p>
+            <a href="http://localhost:8080/swagger-ui.html" class="swagger-link" target="_blank">Abrir Swagger ↗</a>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Coluna Esquerda: Listagem e Votação -->
+            <div class="column">
+                <section class="card" style="margin-bottom: 2rem;">
+                    <h2>Enquetes disponíveis</h2>
+                    <button class="btn btn-outline" style="margin-bottom: 1rem;">Atualizar</button>
+                    <p style="color: #64748b; font-style: italic;">Nenhuma enquete cadastrada.</p>
+                </section>
+
+                <section class="card">
+                    <h2>Votar</h2>
+                    <form>
+                        <div class="form-group">
+                            <label>Seu ID</label>
+                            <input type="number" placeholder="Ex.: 1">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Enquete</label>
+                                <select><option>Selecione...</option></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Opção</label>
+                                <select><option>Selecione...</option></select>
+                            </div>
+                        </div>
+                        <button type="button" class="btn">Registrar voto</button>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Coluna Direita: Administração -->
+            <div class="column">
+                <section class="card" style="margin-bottom: 2rem;">
+                    <h2>Criar enquete</h2>
+                    <form>
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" placeholder="Qual linguagem você prefere?">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>ID do criador</label>
+                                <input type="number" value="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Encerramento</label>
+                                <input type="datetime-local">
+                            </div>
+                        </div>
+                        <button type="button" class="btn">Criar enquete</button>
+                    </form>
+                </section>
+
+                <section class="card">
+                    <h2>Adicionar opção</h2>
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>ID da Enquete</label>
+                                <input type="number" placeholder="ID">
+                            </div>
+                            <div class="form-group">
+                                <label>Nova Opção</label>
+                                <input type="text" placeholder="Descrição da opção">
+                            </div>
+                        </div>
+                        <button type="button" class="btn">Adicionar</button>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

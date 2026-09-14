@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PollTaker — Bem-vindo</title>
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-surface: #111827;
+      --border-color: #1f2937;
+      --cyan: #06b6d4;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 24px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .brand { font-size: 1.5rem; font-weight: bold; }
+    .brand span { color: var(--cyan); }
+    .hero {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 { font-size: 3.5rem; margin-bottom: 16px; line-height: 1.2; }
+    p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 32px; }
+    .cta-group { display: flex; gap: 16px; }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .btn-primary { background-color: var(--cyan); color: #000; border: none; }
+    .btn-outline { background: transparent; color: #fff; border: 1px solid var(--border-color); }
+    .btn:hover { opacity: 0.85; }
+
+    /* Modal simples */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: var(--bg-surface);
+      padding: 32px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      border-radius: 8px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+    label { font-size: 0.85rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Poll<span>Taker</span></div>
+  <div style="display: flex; gap: 12px;">
+    <button class="btn btn-outline" onclick="openModal('loginModal')">Entrar</button>
+    <button class="btn btn-primary" onclick="openModal('registerModal')">Cadastrar</button>
+  </div>
+</header>
+
+<main class="hero">
+  <p style="color: var(--cyan); font-weight: bold; font-size: 0.85rem; letter-spacing: 1px;">MVP • API REST SPRING BOOT</p>
+  <h1>Crie, publique e responda enquetes em tempo real.</h1>
+  <p>Uma plataforma moderna e segura para gerenciar votações e coletar insights com alta performance.</p>
+  <div class="cta-group">
+    <button class="btn btn-primary" onclick="openModal('registerModal')">Começar Agora</button>
+  </div>
+</main>
+
+<!-- Modal de Cadastro -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <h2 style="margin-top:0;">Criar Conta</h2>
+    <form id="registerForm">
+      <label>Nome<input type="text" id="regName" required></label>
+      <label>E-mail<input type="email" id="regEmail" required></label>
+      <!-- ADICIONE ESTA LINHA ABAIXO -->
+      <label>Senha<input type="password" id="regPassword" placeholder="Sua senha" required></label>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Cadastrar</button>
+    </form>
+    <button onclick="closeModal('registerModal')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; margin-top:15px; width:100%;">Cancelar</button>
+  </div>
+</div>
+</div>
+
+<!-- Modal de Login (Simulado por ID) -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <h2 style="margin-top:0;">Entrar no Sistema</h2>
+    <form id="loginForm">
+      <label>E-mail<input type="email" id="loginEmail" placeholder="seu@email.com" required></label>
+      <label>Senha<input type="password" id="loginPassword" placeholder="Sua senha" required></label>
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Entrar</button>
+    </form>
+    <button onclick="closeModal('loginModal')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; margin-top:15px; width:100%;">Cancelar</button>
+  </div>
+</div>
+
+<script>
+  const API = "http://localhost:8080/api/v1";
+
+  function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+  function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+  // Ação de Cadastro
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const senha = document.getElementById('regPassword').value; // CAPTURA A SENHA
+
+    try {
+      const res = await fetch(`${API}/usuarios`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, email, senha }) // ENVIA A SENHA PARA O BACKEND
+      });
+
+      if (!res.ok) {
+        let errorMessage = "Erro ao cadastrar usuário";
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.detail || errorData.message || errorMessage;
+          if (errorData.invalid_params) {
+            errorMessage += ": " + errorData.invalid_params.map(p => `${p.name} ${p.reason}`).join(", ");
+          }
+        } catch (_) {}
+        throw new Error(errorMessage);
+      }
+
+      const user = await res.json();
+      localStorage.setItem("polltaker_user_id", user.id);
+      localStorage.setItem("polltaker_user_name", user.nome);
+      window.location.href = "/dashboard";
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+
+  // Ação de Login por ID
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const senha = document.getElementById('loginPassword').value;
+
+    try {
+      const res = await fetch(`${API}/usuarios`);
+      if (!res.ok) throw new Error("Erro ao conectar com a API");
+
+      const users = await res.json();
+      const user = users.find(u => u.email === email);
+
+      if (!user) throw new Error("Usuário não encontrado com este e-mail.");
+
+      // Salva a sessão no navegador
+      localStorage.setItem("polltaker_user_id", user.id);
+      localStorage.setItem("polltaker_user_name", user.nome);
+      window.location.href = "/dashboard";
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+</script>
+</body>
+</html>
