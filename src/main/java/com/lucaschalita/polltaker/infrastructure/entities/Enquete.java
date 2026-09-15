@@ -28,6 +28,9 @@ public class Enquete {
     @Column(nullable = false, length = 20)
     private StatusEnquete status;
 
+    @Column(nullable = true, length = 100)
+    private String descricao;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

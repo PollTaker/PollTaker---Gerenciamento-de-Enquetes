@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Schema(description = "Dados de uma enquete")
@@ -19,6 +21,10 @@ public class EnqueteRequestDTO {
     @Size(max = 200, message = "O título deve ter no máximo 200 caracteres.")
     @Schema(example = "Qual linguagem você prefere?")
     private String titulo;
+
+    @NotBlank
+    @Size(max = 200)
+    private List<String> opcoes = new ArrayList<>();
 
     @NotNull(message = "O criador é obrigatório.")
     @Positive(message = "O ID do criador deve ser positivo.")
@@ -32,4 +38,8 @@ public class EnqueteRequestDTO {
 
     @Schema(example = "ABERTA")
     private StatusEnquete status;
+
+    @Size(max = 100, message = "Insira uma descrição.")
+    @Schema(example = "Insira uma descrição aqui.")
+    private String descricao;
 }

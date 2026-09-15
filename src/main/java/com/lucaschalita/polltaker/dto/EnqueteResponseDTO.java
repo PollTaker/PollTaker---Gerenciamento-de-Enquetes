@@ -12,6 +12,7 @@ import java.util.List;
 public class EnqueteResponseDTO {
     private Long id;
     private String titulo;
+    private String descricao;
     private StatusEnquete status;
     private LocalDateTime createdAt;
     private LocalDateTime dataEncerramento;

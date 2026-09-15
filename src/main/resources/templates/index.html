@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>PollTaker | Espaço de Votações</title>
+    <style>
+        :root {
+            --bg-space: #030712;
+            --card-bg: rgba(15, 23, 42, 0.8);
+            --neon-cyan: #38bdf8;
+            --neon-purple: #818cf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(56, 189, 248, 0.3);
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, var(--bg-space) 80%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .hero {
+            text-align: center;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glow);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.15);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple), transparent);
+            border-radius: 21px;
+            z-index: -1;
+            opacity: 0.4;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #38bdf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        p {
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .btn {
+            padding: 12px;
+            text-decoration: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        .btn-success:hover {
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(148, 163, 184, 0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(51, 65, 85, 1);
+            border-color: var(--neon-cyan);
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>PollTaker 🚀</h1>
+    <p>Central orbital de criação, gerenciamento e votação em enquetes de alta precisão com padrões corporativos.</p>
+
+    <div class="btn-group">
+        <a href="/app/login" class="btn btn-primary">Entrar no Sistema</a>
+        <a href="/app/register" class="btn btn-success">Registrar Credenciais</a>
+        <a href="/app/enquetes" class="btn btn-secondary">Acessar Painel de Enquetes</a>
+    </div>
+</div>
+
+</body>
+</html>

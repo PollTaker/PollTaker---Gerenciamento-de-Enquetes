@@ -1,6 +1,0 @@
-#FileLock
-#Mon Sep 14 16:23:00 GMT-03:00 2026
-hostName=10.0.0.106
-id=1a0a15f63328897a21c7f8fd184258fddc17436f6e8
-method=file
-server=10.0.0.106\:55908

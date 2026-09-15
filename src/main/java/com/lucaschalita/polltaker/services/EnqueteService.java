@@ -6,8 +6,10 @@ import com.lucaschalita.polltaker.dto.OpcaoResponseDTO;
 import com.lucaschalita.polltaker.exceptions.EnqueteNotFoundException;
 import com.lucaschalita.polltaker.exceptions.UsuarioNotFoundException;
 import com.lucaschalita.polltaker.infrastructure.entities.Enquete;
+import com.lucaschalita.polltaker.infrastructure.entities.Opcao;
 import com.lucaschalita.polltaker.infrastructure.enums.StatusEnquete;
 import com.lucaschalita.polltaker.infrastructure.repositories.EnqueteRepository;
+import com.lucaschalita.polltaker.infrastructure.repositories.OpcaoRepository;
 import com.lucaschalita.polltaker.infrastructure.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +24,12 @@ public class EnqueteService {
 
     private final EnqueteRepository repository;
     private final UsuarioRepository usuarioRepository;
+    private final OpcaoRepository opcaoRepository;
 
-    public EnqueteService(EnqueteRepository repository, UsuarioRepository usuarioRepository) {
+    public EnqueteService(EnqueteRepository repository, UsuarioRepository usuarioRepository, OpcaoRepository opcaoRepository) {
         this.repository = repository;
         this.usuarioRepository = usuarioRepository;
+        this.opcaoRepository = opcaoRepository;
     }
 
     @Transactional
@@ -35,14 +39,32 @@ public class EnqueteService {
 
         Enquete enquete = Enquete.builder()
                 .titulo(dto.getTitulo())
+                .descricao(dto.getDescricao())
                 .criador(criador)
                 .status(dto.getStatus() == null ? StatusEnquete.ABERTA : dto.getStatus())
                 .createdAt(LocalDateTime.now())
                 .dataEncerramento(dto.getDataEncerramento())
                 .build();
 
-        return toResponse(repository.save(enquete));
+        // Salva a enquete primeiro para gerar o ID
+        Enquete enqueteSalva = repository.save(enquete);
+
+        // Salva as opções enviadas no formulário
+        if (dto.getOpcoes() != null) {
+            for (String tituloOpcao : dto.getOpcoes()) {
+                if (tituloOpcao != null && !tituloOpcao.trim().isEmpty()) {
+                    Opcao opcao = new Opcao();
+                    opcao.setTitulo(tituloOpcao);
+                    opcao.setEnquete(enqueteSalva);
+                    opcaoRepository.save(opcao);
+                }
+            }
+        }
+
+        return toResponse(enqueteSalva);
     }
+
+    // (Mantenha os demais métodos inalterados...)
 
     @Transactional(readOnly = true)
     public List<EnqueteResponseDTO> listar() {
@@ -87,6 +109,7 @@ public class EnqueteService {
                 .orElseThrow(() -> new UsuarioNotFoundException("Criador não encontrado."));
 
         enquete.setTitulo(dto.getTitulo());
+        enquete.setDescricao(dto.getDescricao());
         enquete.setCriador(criador);
         enquete.setDataEncerramento(dto.getDataEncerramento());
 
@@ -107,16 +130,17 @@ public class EnqueteService {
         List<OpcaoResponseDTO> opcoes = e.getOpcoes() == null
                 ? List.of()
                 : e.getOpcoes().stream()
-                    .map(o -> OpcaoResponseDTO.builder()
-                            .id(o.getId())
-                            .titulo(o.getTitulo())
-                            .enqueteId(e.getId())
-                            .build())
-                    .toList();
+                .map(o -> OpcaoResponseDTO.builder()
+                        .id(o.getId())
+                        .titulo(o.getTitulo())
+                        .enqueteId(e.getId())
+                        .build())
+                .toList();
 
         return EnqueteResponseDTO.builder()
                 .id(e.getId())
                 .titulo(e.getTitulo())
+                .descricao(e.getDescricao())
                 .status(e.getStatus())
                 .createdAt(e.getCreatedAt())
                 .dataEncerramento(e.getDataEncerramento())
