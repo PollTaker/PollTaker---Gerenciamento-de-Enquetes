@@ -1,0 +1,150 @@
+Requisitos do Sistema
+
+Requisitos Funcionais (RF)
+
+RF01 – Cadastro de Usuários
+
+O sistema deve permitir o cadastro de novos usuários informando nome,
+e-mail e senha.
+
+RF02 – Autenticação
+
+O sistema deve permitir que usuários autenticados realizem login
+utilizando e-mail e senha.
+
+RF03 – Gerenciamento de Enquetes
+
+O sistema deve permitir que usuários autenticados criem novas enquetes.
+
+RF04 – Cadastro de Opções
+
+Ao criar uma enquete, o usuário deverá informar pelo menos duas opções
+de resposta.
+
+RF05 – Consulta de Enquetes
+
+O sistema deve permitir a visualização das enquetes disponíveis para
+votação.
+
+RF06 – Registro de Votos
+
+O sistema deve permitir que usuários autenticados registrem um voto em
+uma enquete ativa.
+
+RF07 – Apuração dos Resultados
+
+O sistema deve contabilizar automaticamente os votos recebidos por cada
+opção.
+
+RF08 – Encerramento de Enquetes
+
+O sistema deve impedir novos votos após a data de encerramento da
+enquete ou quando ela for encerrada pelo criador.
+
+RF09 – Consulta de Resultados
+
+O sistema deve permitir visualizar os resultados das enquetes.
+
+RF10 – Gerenciamento de Enquetes do Usuário
+
+O sistema deve permitir que o criador visualize as enquetes que criou.
+
+Requisitos Não Funcionais (RNF)
+
+RNF01
+
+O sistema deverá ser desenvolvido em Java utilizando o framework Spring
+Boot.
+
+RNF02
+
+A comunicação entre cliente e servidor deverá ocorrer por meio de uma
+API REST.
+
+RNF03
+
+Os dados deverão ser persistidos em banco de dados PostgreSQL.
+
+RNF04
+
+As senhas dos usuários deverão ser armazenadas de forma criptografada.
+
+RNF05
+
+O acesso às funcionalidades protegidas deverá ocorrer somente mediante
+autenticação.
+
+RNF06
+
+O sistema deverá utilizar a arquitetura em camadas (Controller, Service,
+Repository e Entity).
+
+RNF07
+
+A aplicação deverá utilizar Git e GitHub para versionamento do código.
+
+RNF08
+
+A API deverá retornar respostas padronizadas utilizando DTOs quando
+necessário.
+
+RNF09
+
+O sistema deverá possuir código organizado e documentado para facilitar
+manutenção.
+
+Regras de Negócio (RN)
+
+RN01
+
+Somente usuários autenticados poderão criar enquetes.
+
+RN02
+
+Cada enquete deverá possuir, no mínimo, duas opções de votação.
+
+RN03
+
+Cada usuário poderá votar apenas uma vez em cada enquete.
+
+RN04
+
+Somente enquetes com status ABERTA poderão receber votos.
+
+RN05
+
+Após encerrada, uma enquete não poderá receber novos votos.
+
+RN06
+
+Cada voto deverá estar vinculado a um usuário e a uma única opção da
+enquete.
+
+RN07
+
+Cada opção pertence exclusivamente a uma enquete.
+
+RN08
+
+A contagem dos votos deverá ser atualizada imediatamente após o registro
+de um novo voto.
+
+RN09
+
+Apenas o criador da enquete poderá encerrá-la antes da data prevista
+(caso essa funcionalidade seja implementada).
+
+RN10
+
+O sistema deverá impedir o cadastro de usuários com e-mail já existente.
+
+Casos de Uso contemplados
+
+-   Cadastrar usuário
+-   Realizar login
+-   Criar enquete
+-   Adicionar opções à enquete
+-   Consultar enquetes
+-   Votar em uma enquete
+-   Consultar resultados
+-   Visualizar enquetes criadas
