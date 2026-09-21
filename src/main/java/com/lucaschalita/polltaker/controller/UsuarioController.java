@@ -1,57 +1,62 @@
 package com.lucaschalita.polltaker.controller;
 
+import com.lucaschalita.polltaker.dto.UsuarioRequestDTO;
+import com.lucaschalita.polltaker.dto.UsuarioResponseDTO;
+import com.lucaschalita.polltaker.services.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.lucaschalita.polltaker.infrastructure.entities.Usuario;
-import com.lucaschalita.polltaker.services.UsuarioService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/usuarios")
 @RequiredArgsConstructor
+@Tag(name = "Usuários")
 public class UsuarioController {
 
-	private final UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
+    @PostMapping
+    @Operation(summary = "Cria um usuário")
+    public ResponseEntity<UsuarioResponseDTO> criar(@Valid @RequestBody UsuarioRequestDTO dto) {
+        return ResponseEntity.status(201).body(usuarioService.salvar(dto));
+    }
 
-	@PostMapping
-	public ResponseEntity<Void> salvarUsuario(
-			@RequestBody Usuario usuario) {
+    @GetMapping
+    @Operation(summary = "Lista usuários")
+    public ResponseEntity<List<UsuarioResponseDTO>> listar() {
+        return ResponseEntity.ok(usuarioService.listar());
+    }
 
-		usuarioService.salvarUsuario(usuario);
+    @GetMapping("/{id}")
+    @Operation(summary = "Busca usuário por ID")
+    public ResponseEntity<UsuarioResponseDTO> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    }
 
-		return ResponseEntity.status(201).build();
-	}
+    @GetMapping("/email")
+    @Operation(summary = "Busca usuário por e-mail")
+    public ResponseEntity<UsuarioResponseDTO> buscarPorEmail(@RequestParam String email) {
+        return ResponseEntity.ok(usuarioService.buscarPorEmail(email));
+    }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualiza usuário")
+    public ResponseEntity<UsuarioResponseDTO> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody UsuarioRequestDTO dto
+    ) {
+        return ResponseEntity.ok(usuarioService.atualizar(id, dto));
+    }
 
-	@GetMapping
-	public ResponseEntity<Usuario> buscarUsuarioPorEmail(
-			@RequestParam String email) {
-
-		return ResponseEntity.ok(
-				usuarioService.buscarPorEmail(email)
-		);
-	}
-
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteByIdId(
-			@PathVariable Long id) {
-
-		usuarioService.deleteById(id);
-
-		return ResponseEntity.noContent().build();
-	}
-
-	@PutMapping("/{id}")
-	public ResponseEntity<Void> atualizarUsuario(
-			@PathVariable Long id,
-			@RequestBody Usuario usuario) {
-
-		usuarioService.atualizarUsuarioPorId(id, usuario);
-
-		return ResponseEntity.ok().build();
-	}
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Remove usuário")
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        usuarioService.remover(id);
+        return ResponseEntity.noContent().build();
+    }
 }

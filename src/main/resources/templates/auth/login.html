@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - PollTaker</title>
+    <style>
+        :root {
+            --bg-space: #030712;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --neon-cyan: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, var(--bg-space) 90%);
+            color: var(--text-main);
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%; max-width: 380px;
+        }
+        h2 { text-align: center; color: var(--neon-cyan); margin-bottom: 25px; font-weight: 600; letter-spacing: 0.5px; }
+        form { display: flex; flex-direction: column; gap: 15px; }
+        input {
+            padding: 12px; font-size: 14px; border-radius: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: white; outline: none; transition: border 0.3s;
+        }
+        input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 8px rgba(56, 189, 248, 0.3); }
+        button {
+            padding: 12px; font-size: 14px; border-radius: 8px; border: none;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: white; cursor: pointer; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s;
+        }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        .alert-error { color: #f87171; background: rgba(239, 68, 68, 0.1); padding: 10px; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; text-align: center; font-size: 13px; margin-bottom: 15px; }
+        .alert-success { color: #34d399; background: rgba(16, 185, 129, 0.1); padding: 10px; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; text-align: center; font-size: 13px; margin-bottom: 15px; }
+        .links { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+        .links a { color: var(--neon-cyan); text-decoration: none; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Acesso Orbital</h2>
+
+    <div th:if="${mensagemErro}" class="alert-error" th:text="${mensagemErro}"></div>
+    <div th:if="${mensagemSucesso}" class="alert-success" th:text="${mensagemSucesso}"></div>
+
+    <form th:action="@{/app/login}" method="post">
+        <input type="text" name="username" placeholder="Identificação (E-mail)" required />
+        <input type="password" name="password" placeholder="Código de Acesso (Senha)" required />
+        <button type="submit">Iniciar Sessão</button>
+    </form>
+
+    <div class="links">
+        <p>Sem credenciais? <a href="/app/register">Solicitar Registro</a></p>
+        <p><a href="/">&larr; Retornar à Base</a></p>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,41 +1,89 @@
 package com.lucaschalita.polltaker.services;
 
-import org.springframework.stereotype.Service;
-import com.lucaschalita.polltaker.exceptions.*;
+import com.lucaschalita.polltaker.dto.OpcaoRequestDTO;
+import com.lucaschalita.polltaker.dto.OpcaoResponseDTO;
+import com.lucaschalita.polltaker.exceptions.EnqueteNotFoundException;
+import com.lucaschalita.polltaker.exceptions.OpcaoNotFoundException;
 import com.lucaschalita.polltaker.infrastructure.entities.Opcao;
+import com.lucaschalita.polltaker.infrastructure.repositories.EnqueteRepository;
 import com.lucaschalita.polltaker.infrastructure.repositories.OpcaoRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class OpcaoService {
-	private final OpcaoRepository repository;
-	
-	public OpcaoService (OpcaoRepository repository) {
-		this.repository = repository;
-	}
-	
-	public void salvarOpcao (Opcao opcao) {
-		repository.saveAndFlush(opcao);
-	}
-	
-	public Opcao buscarPorTitulo (String titulo) {
-		return repository.findByTitulo(titulo).orElseThrow(
-				() -> new OpcaoNotFoundException("Opção não encontrada.")
-		);
-	}
-	
-	public void deletarPorId (Long id) {
-		repository.deleteById(id);
-	}
-	
-	public void atualizarOpcaoPorId (Long id, Opcao opcao) {
-		Opcao opcaoEntity = repository.findById(id).orElseThrow(
-				() -> new OpcaoNotFoundException("Opção não encontrada.")
-		);
-		Opcao opcaoAtualizada = Opcao.builder()
-				.id(opcaoEntity.getId())
-				.titulo(opcao.getTitulo() != null ? opcao.getTitulo() : opcaoEntity.getTitulo())
-				.enquete(opcao.getEnquete() != null ? opcao.getEnquete() : opcaoEntity.getEnquete())
-				.build();
-		repository.saveAndFlush(opcaoAtualizada);
-	}
+
+    private final OpcaoRepository repository;
+    private final EnqueteRepository enqueteRepository;
+
+    public OpcaoService(OpcaoRepository repository, EnqueteRepository enqueteRepository) {
+        this.repository = repository;
+        this.enqueteRepository = enqueteRepository;
+    }
+
+    @Transactional
+    public OpcaoResponseDTO salvar(OpcaoRequestDTO dto) {
+        var enquete = enqueteRepository.findById(dto.getEnqueteId())
+                .orElseThrow(() -> new EnqueteNotFoundException("Enquete não encontrada."));
+
+        Opcao opcao = Opcao.builder()
+                .titulo(dto.getTitulo())
+                .enquete(enquete)
+                .build();
+
+        return toResponse(repository.save(opcao));
+    }
+
+    @Transactional(readOnly = true)
+    public List<OpcaoResponseDTO> listar() {
+        return repository.findAll().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Opcao buscarEntidade(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new OpcaoNotFoundException("Opção não encontrada."));
+    }
+
+    @Transactional(readOnly = true)
+    public OpcaoResponseDTO buscarPorId(Long id) {
+        return toResponse(buscarEntidade(id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<OpcaoResponseDTO> listarPorEnquete(Long enqueteId) {
+        return repository.findByEnqueteId(enqueteId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public OpcaoResponseDTO atualizar(Long id, OpcaoRequestDTO dto) {
+        Opcao opcao = buscarEntidade(id);
+
+        var enquete = enqueteRepository.findById(dto.getEnqueteId())
+                .orElseThrow(() -> new EnqueteNotFoundException("Enquete não encontrada."));
+
+        opcao.setTitulo(dto.getTitulo());
+        opcao.setEnquete(enquete);
+
+        return toResponse(repository.save(opcao));
+    }
+
+    @Transactional
+    public void remover(Long id) {
+        Opcao opcao = buscarEntidade(id);
+        repository.delete(opcao);
+    }
+
+    private OpcaoResponseDTO toResponse(Opcao o) {
+        return OpcaoResponseDTO.builder()
+                .id(o.getId())
+                .titulo(o.getTitulo())
+                .enqueteId(o.getEnquete().getId())
+                .build();
+    }
 }

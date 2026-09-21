@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - PollTaker</title>
+    <style>
+        :root {
+            --bg-space: #030712;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --neon-green: #34d399;
+            --neon-cyan: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, var(--bg-space) 90%);
+            color: var(--text-main);
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%; max-width: 380px;
+        }
+        h2 { text-align: center; color: var(--neon-green); margin-bottom: 25px; font-weight: 600; }
+        form { display: flex; flex-direction: column; gap: 15px; }
+        input {
+            padding: 12px; font-size: 14px; border-radius: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: white; outline: none; transition: border 0.3s;
+        }
+        input:focus { border-color: var(--neon-green); box-shadow: 0 0 8px rgba(52, 211, 153, 0.3); }
+        button {
+            padding: 12px; font-size: 14px; border-radius: 8px; border: none;
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white; cursor: pointer; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: all 0.3s;
+        }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        .links { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+        .links a { color: var(--neon-cyan); text-decoration: none; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Novo Operador</h2>
+
+    <form th:action="@{/app/register}" th:object="${usuario}" method="post">
+        <input type="text" th:field="*{nome}" placeholder="Nome do Tripulante" required />
+        <input type="email" th:field="*{email}" placeholder="E-mail de Contato" required />
+        <input type="password" th:field="*{senha}" placeholder="Senha de Segurança" required />
+        <button type="submit">Cadastrar Tripulante</button>
+    </form>
+
+    <div class="links">
+        <p>Já possui cadastro? <a href="/app/login">Fazer Login</a></p>
+        <p><a href="/">&larr; Retornar à Base</a></p>
+    </div>
+</div>
+
+</body>
+</html>

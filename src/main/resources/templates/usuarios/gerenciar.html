@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Usuários - PollTaker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        form { margin-bottom: 30px; display: flex; flex-direction: column; gap: 10px; }
+        input, button { padding: 10px; font-size: 14px; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        a { text-decoration: none; color: #007bff; display: inline-block; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/app/enquetes">&larr; Voltar para Enquetes</a>
+    <h2>Cadastrar Novo Usuário</h2>
+    <form th:action="@{/app/usuarios}" th:object="${usuario}" method="post">
+        <input type="text" th:field="*{nome}" placeholder="Nome Completo" required />
+        <input type="email" th:field="*{email}" placeholder="E-mail" required />
+        <input type="password" th:field="*{senha}" placeholder="Senha" required />
+        <button type="submit">Salvar Usuário</button>
+    </form>
+
+    <h2>Usuários Cadastrados</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${usuarios}">
+            <td th:text="${u.id}">1</td>
+            <td th:text="${u.nome}">Nome</td>
+            <td th:text="${u.email}">email@email.com</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

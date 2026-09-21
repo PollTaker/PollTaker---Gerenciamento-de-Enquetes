@@ -1,30 +1,34 @@
 package com.lucaschalita.polltaker.infrastructure.entities;
 
-import java.util.List;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "Usuario")
 @Entity
-
+@Table(name = "Usuario")
 public class Usuario {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@Column(name = "email", unique = true)
-	private String email;
-	
-	@Column(name = "nome")
-	private String nome;
-	
-	@OneToMany(mappedBy = "criador")
-	private List<Enquete> enquetesCriadas;
-	
-	private String senha;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 150)
+    private String email;
+
+    @Column(nullable = false, length = 100)
+    private String nome;
+
+    @OneToMany(mappedBy = "criador")
+    @Builder.Default
+    private List<Enquete> enquetesCriadas = new ArrayList<>();
+
+    @Column(nullable = false)
+    private String senha;
 }

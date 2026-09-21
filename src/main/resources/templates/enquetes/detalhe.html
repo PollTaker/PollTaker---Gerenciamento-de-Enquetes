@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes da Enquete - PollTaker</title>
+    <style>
+        :root {
+            --bg-space: #030712;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --neon-cyan: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, var(--bg-space) 90%);
+            color: var(--text-main);
+            margin: 0; padding: 40px 20px; min-height: 100vh;
+        }
+        .container {
+            max-width: 700px; margin: auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 35px; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1 { color: var(--neon-cyan); font-size: 1.8rem; margin-bottom: 10px; }
+        .section { margin-top: 25px; padding: 20px; background: rgba(30, 41, 59, 0.5); border-radius: 10px; border: 1px solid rgba(148,163,184,0.1); }
+        ul { padding-left: 20px; color: #cbd5e1; }
+        li { margin-bottom: 6px; }
+        input, select {
+            padding: 10px; font-size: 14px; border-radius: 6px;
+            background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(148, 163, 184, 0.2);
+            color: white; width: 100%; box-sizing: border-box; margin-top: 6px; margin-bottom: 12px;
+        }
+        option { background: #0f172a; color: white; }
+        button {
+            padding: 10px 18px; font-size: 14px; border-radius: 6px; border: none;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: white; cursor: pointer; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+        .btn-success { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        a { text-decoration: none; color: var(--neon-cyan); font-size: 0.9rem; display: inline-block; margin-bottom: 20px; }
+        p { color: var(--text-muted); line-height: 1.5; }
+        strong { color: white; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/app/enquetes">&larr; Retornar ao Painel</a>
+
+    <h1 th:text="${enquete.titulo}">Título</h1>
+    <p><strong>Descrição:</strong> <span th:text="${enquete.descricao}">Sem descrição</span></p>
+    <p><strong>Status:</strong> <span th:text="${enquete.status}">ABERTA</span> | <strong>Criador:</strong> <span th:text="${enquete.criador.nome}">Criador</span></p>
+
+    <div class="section">
+        <h3>Opções Cadastradas</h3>
+        <ul>
+            <li th:each="opt : ${enquete.opcoes}" th:text="${opt.titulo}">Opção</li>
+        </ul>
+
+        <h4 style="color: white; margin-top: 20px;">Adicionar Nova Opção</h4>
+        <form th:action="@{/app/enquetes/{id}/opcoes(id=${enquete.id})}" method="post">
+            <input type="text" name="tituloOpcao" placeholder="Título da opção espacial..." required />
+            <button type="submit">Adicionar Opção</button>
+        </form>
+    </div>
+
+    <div class="section">
+        <h3>Registrar Voto na Missão</h3>
+        <form th:action="@{/app/enquetes/{id}/votar(id=${enquete.id})}" method="post">
+            <label>Selecione o Operador (Eleitor):</label>
+            <select name="usuarioId" required>
+                <option value="">Escolher tripulante</option>
+                <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nome}"></option>
+            </select>
+
+            <label>Selecione a Opção de Voto:</label>
+            <select name="opcaoId" required>
+                <option value="">Escolher opção</option>
+                <option th:each="opt : ${enquete.opcoes}" th:value="${opt.id}" th:text="${opt.titulo}"></option>
+            </select>
+
+            <button type="submit" class="btn-success" style="margin-top: 10px;">Transmitir Voto</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

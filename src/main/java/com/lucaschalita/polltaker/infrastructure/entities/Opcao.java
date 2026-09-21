@@ -8,18 +8,18 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "OpcaoVoto")
 @Entity
-
+@Table(name = "OpcaoVoto")
 public class Opcao {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@Column(name = "titulo")
-	private String titulo;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_enquete")
-	private Enquete enquete;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 200)
+    private String titulo;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_enquete", nullable = false)
+    private Enquete enquete;
 }
